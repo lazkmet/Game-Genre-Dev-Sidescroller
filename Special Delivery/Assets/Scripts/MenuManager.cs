@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 public class MenuManager : MonoBehaviour
 {
     public Canvas[] screens;
+    public bool pausable;
+    public Canvas pauseScreen;
+    public PlayerMovement player;
     public bool isPaused { get; private set; }
     private void Awake()
     {
@@ -28,21 +31,23 @@ public class MenuManager : MonoBehaviour
     public void SetScene(string sceneName) {
         SceneManager.LoadScene(sceneName);
     }
-    public void TogglePause(int pauseScreenIndex = 1)
+    public void TogglePause()
     {
-        isPaused = !isPaused;
-        if (isPaused)
-        {
-            Time.timeScale = 0;
-            if (pauseScreenIndex > 0 && pauseScreenIndex < screens.Length) {
-                screens[pauseScreenIndex].gameObject.SetActive(true);
-            }
-        }
-        else {
-            Time.timeScale = 1;
-            if (pauseScreenIndex > 0 && pauseScreenIndex < screens.Length)
+        if (pausable) {
+            isPaused = !isPaused;
+            if (isPaused)
             {
-                screens[pauseScreenIndex].gameObject.SetActive(false);
+                Time.timeScale = 0;
+                if (pauseScreen != null) {
+                    pauseScreen.gameObject.SetActive(true);
+                }
+            }
+            else {
+                Time.timeScale = 1;
+                if (pauseScreen != null)
+                {
+                    pauseScreen.gameObject.SetActive(false);
+                }
             }
         }
     }

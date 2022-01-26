@@ -2,19 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(DistanceJoint2D)), RequireComponent(typeof(LineRenderer))]
 public class Grapple : MonoBehaviour
 {
-    public DistanceJoint2D rope;
-    public LineRenderer ropeRenderer;
+    
     public Camera mainCamera;
     public Transform ropeOrigin;
     public LayerMask grapplableLayers;
+    public float fireDuration;
+    public GameManager GameManager;
     public bool returning { get; private set; }
     public bool attached { get; private set; }
     public bool buffering { get; private set; }
-    public float fireDuration;
+    public DistanceJoint2D rope { get; private set; }
+    public LineRenderer ropeRenderer { get; private set; }
     private void Awake()
     {
+        rope = gameObject.GetComponent<DistanceJoint2D>();
+        ropeRenderer = gameObject.GetComponent<LineRenderer>();
         rope.enabled = false;
         ropeRenderer.enabled = false;
         returning = false;
@@ -24,29 +29,35 @@ public class Grapple : MonoBehaviour
     public void Update()
     {
         ropeRenderer.SetPosition(0, ropeOrigin.position);
-        if (Input.GetMouseButtonDown(0))
+        if (!GameManager.menu.isPaused)
         {
-            if (!returning)
+            if (Input.GetMouseButtonDown(0))
             {
-                StartCoroutine("CR_FireRope");
+                if (!returning)
+                {
+                    StartCoroutine("CR_FireRope");
+                }
+                else
+                {
+                    buffering = true;
+                }
             }
-            else {
-                buffering = true;
-            }
-        }
-        else if (Input.GetMouseButtonUp(0)) {
-            if (!returning)
+            else if (Input.GetMouseButtonUp(0))
             {
-                StartCoroutine("CR_ReturnRope");
+                if (!returning)
+                {
+                    StartCoroutine("CR_ReturnRope");
+                }
+                else
+                {
+                    buffering = false;
+                }
             }
-            else {
-                buffering = false;
+            if (rope.enabled && ropeOrigin.position.y > rope.connectedAnchor.y)
+            {
+                //automatically retracts rope if you are above connecting point, with speed multiplied by the sine of the rope angle (closer to perpendicular, faster retract)
+                Extend(-0.05f * (rope.attachedRigidbody.position.y - rope.connectedAnchor.y) / (rope.connectedAnchor - rope.attachedRigidbody.position).magnitude);
             }
-        }
-        if (rope.enabled && ropeOrigin.position.y > rope.connectedAnchor.y)
-        {
-            //automatically retracts rope if you are above connecting point, with speed multiplied by the sine of the rope angle (closer to perpendicular, faster retract)
-            Extend(-0.05f * (rope.attachedRigidbody.position.y - rope.connectedAnchor.y)/(rope.connectedAnchor-rope.attachedRigidbody.position).magnitude);
         }
     }
 

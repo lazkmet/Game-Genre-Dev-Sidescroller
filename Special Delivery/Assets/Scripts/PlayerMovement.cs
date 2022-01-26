@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+[RequireComponent(typeof(Grapple)), RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody2D body { get; private set; }
@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     {
         movementEnabled = true;
         body = this.GetComponent<Rigidbody2D>();
+        body.interpolation = RigidbodyInterpolation2D.Interpolate;
         grapple = this.GetComponent<Grapple>();
         startPoint = this.gameObject.transform.position;
         ResetToPosition(startPoint);
