@@ -965,7 +965,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!223 &574455132
 Canvas:
   m_ObjectHideFlags: 0
@@ -2400,11 +2400,14 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Character Sprites - Hand Drawn by Delfina Martinez
 
-    Environment Sprites
-    - City Mega Pack by GrafxKid
+    <s>Environment
+    Sprites - City Mega Pack by GrafxKid</s>
 
-    Grapple Physics - Loosely Based on 1-Second
-    Unity''s "PERFECT Grappling Hook" on YouTube'
+    Grapple Physics - Loosely Based
+    on 1-Second Unity''s "PERFECT Grappling Hook" on YouTube
+
+    Some scripting
+    help from <u>answers.unity.com</u> and <u>Unity Documentation</u>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a022b61c069a0684bbf9318004b98e84, type: 2}
   m_sharedMaterial: {fileID: -727767679205865601, guid: a022b61c069a0684bbf9318004b98e84, type: 2}

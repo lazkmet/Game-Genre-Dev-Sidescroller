@@ -4,15 +4,43 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public Vector2 position { get; private set; }
+    public Collider2D activeArea { get; private set; }
+    public bool packageHad { get; private set; }
+    private GameManager manager;
+    private void Awake()
     {
-        
-    }
+        position = this.gameObject.transform.position;
+        try
+        {
+            activeArea = this.gameObject.GetComponent<Collider2D>();
+        }
+        catch (System.Exception)
+        {
 
-    // Update is called once per frame
-    void Update()
+        }
+        manager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        packageHad = false;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        
+        if (collision.gameObject.layer == 7)
+        {
+            Activate();
+        }
+    }
+    public void Activate(){
+        try
+        {
+            print("Checkpoint Activated");
+            manager.activeCheckpoint = this;
+            if (manager.player.hasPackage) {
+                packageHad = true;
+            }
+        }
+        catch (System.Exception ex)
+        {
+            print(ex.Message);
+        }
     }
 }

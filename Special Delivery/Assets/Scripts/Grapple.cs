@@ -10,7 +10,8 @@ public class Grapple : MonoBehaviour
     public Transform ropeOrigin;
     public LayerMask grapplableLayers;
     public float fireDuration;
-    public GameManager GameManager;
+    [HideInInspector]
+    public PlayerMovement player;
     public bool returning { get; private set; }
     public bool attached { get; private set; }
     public bool buffering { get; private set; }
@@ -20,6 +21,7 @@ public class Grapple : MonoBehaviour
     {
         rope = gameObject.GetComponent<DistanceJoint2D>();
         ropeRenderer = gameObject.GetComponent<LineRenderer>();
+        player = gameObject.GetComponent<PlayerMovement>();
         rope.enabled = false;
         ropeRenderer.enabled = false;
         returning = false;
@@ -29,7 +31,7 @@ public class Grapple : MonoBehaviour
     public void Update()
     {
         ropeRenderer.SetPosition(0, ropeOrigin.position);
-        if (!GameManager.menu.isPaused)
+        if (player.movementEnabled)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -56,6 +58,7 @@ public class Grapple : MonoBehaviour
             if (rope.enabled && ropeOrigin.position.y > rope.connectedAnchor.y)
             {
                 //automatically retracts rope if you are above connecting point, with speed multiplied by the sine of the rope angle (closer to perpendicular, faster retract)
+                //TWEAK THIS
                 Extend(-0.05f * (rope.attachedRigidbody.position.y - rope.connectedAnchor.y) / (rope.connectedAnchor - rope.attachedRigidbody.position).magnitude);
             }
         }
