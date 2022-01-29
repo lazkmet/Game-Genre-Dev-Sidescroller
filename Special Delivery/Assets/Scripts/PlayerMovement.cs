@@ -7,17 +7,13 @@ public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody2D body { get; private set; }
     public Grapple grapple { get; private set; }
-    public GameObject kickbox;
+    public Kick kick;
     public LayerMask terrainLayer;
     public LayerMask enemyLayer;
     public float walkSpeed;
     public float airSpeed;
     public float swingForce;
     public float extendAmount;
-    public float kickCooldown;
-    public float kickDuration;
-    public float kickForce;
-    public float stunDuration;
     public GameObject package;
     public bool movementEnabled;
     public bool hasPackage;
@@ -27,8 +23,8 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         body = this.GetComponent<Rigidbody2D>();
-        body.interpolation = RigidbodyInterpolation2D.Interpolate;
         grapple = this.GetComponent<Grapple>();
+        body.interpolation = RigidbodyInterpolation2D.Interpolate;
         manager = GameObject.Find("GameManager").GetComponent<GameManager>();
         Reset();
     }
@@ -47,7 +43,6 @@ public class PlayerMovement : MonoBehaviour
                 {
                     grapple.Extend(extendAmount);
                 }
-                //REWORK PHYSICS IF TIME
                 else if (Input.GetKey(KeyCode.A))
                 {
                     body.AddForce(Vector2.left * swingForce * Time.deltaTime);
@@ -88,9 +83,7 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
             if (Input.GetKeyDown(KeyCode.Space) && !isGrounded()) {
-                if (!kicking) {
-                    Invoke("Kick", 0.2f);
-                }
+                kick.TryKick();
             }
         }
         else {
@@ -99,12 +92,10 @@ public class PlayerMovement : MonoBehaviour
     }
     public void ResetToCheckpoint(Checkpoint point) {
         this.gameObject.transform.SetPositionAndRotation(point.position, Quaternion.identity);
-        gameObject.layer = 7;
         body.velocity = Vector2.zero;
         movementEnabled = true;
-        kickbox.SetActive(false);
         hasPackage = point.packageHad;
-        kicking = false;
+        kick.StopKick();
     }
     public bool isGrounded() {
         Collider2D coll = body.gameObject.GetComponent<Collider2D>();
@@ -150,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
         }
         hasPackage = false;
     }
-    private void Kick() {
+    /*private void Kick() {
         kicking = true;
         if (movementEnabled)
         {
@@ -196,6 +187,7 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(cooldownTime);
         kicking = false;
     }
+*/
     public void Stun(float stunTime) {
         movementEnabled = false;
         CancelInvoke();

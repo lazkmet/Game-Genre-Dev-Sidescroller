@@ -9,7 +9,6 @@ public class GameManager : MonoBehaviour
     public PlayerMovement player;
     public Package package;
     public Checkpoint startPoint;
-    [HideInInspector]
     public Checkpoint activeCheckpoint;
     public int maxLives = 1;
     private int currentLives;
@@ -100,7 +99,6 @@ public class GameManager : MonoBehaviour
         try
         {
             menu.screens[0].GetComponentInChildren<LivesDisplay>().UpdateLives(currentLives);
-            activeCheckpoint = startPoint;
         }
         catch (System.Exception ex)
         {
