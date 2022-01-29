@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4777191818740459860}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.25, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4777191819845579765}
@@ -473,3 +473,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43c29e1ae78704c4c8b17f9aa0509790, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 21300000, guid: 1e86d05fd7035164887b743a6d80e9dd, type: 3}
+  - {fileID: 21300000, guid: 0851f721d8b1bf943b7a22741add9ae0, type: 3}
+  - {fileID: 21300000, guid: d93898049eb33fa4b99fb9c32d7f7916, type: 3}
+  - {fileID: 21300000, guid: 5e89ed6a579a2e345aaaef64161708c0, type: 3}
+  - {fileID: 21300000, guid: 5e89ed6a579a2e345aaaef64161708c0, type: 3}
+  - {fileID: 21300000, guid: 2a1d56adb272fa4469eed9d2cf682f3f, type: 3}
+  - {fileID: 21300000, guid: 3e7f5bc579242284687a7e6d6dc20783, type: 3}
+  - {fileID: 21300000, guid: 09859949f46da32478fd4ff5b867ed90, type: 3}
+  - {fileID: 21300000, guid: 2c1841d82fc1c4c499fa6b3ab94b8cff, type: 3}
+  - {fileID: 21300000, guid: b365ddf8dbb15294c85de87233982b2f, type: 3}
+  - {fileID: 21300000, guid: 1d66cadab29ba86469ceae1f330c7e1d, type: 3}
+  - {fileID: 21300000, guid: e003e93b837f7e748a78a4979b0f3473, type: 3}
+  - {fileID: 21300000, guid: 9c197f00cec55364ea379e8e50dc9897, type: 3}
+  - {fileID: 21300000, guid: d3a83cd914b5cc34a8c690642ae6fd83, type: 3}
+  - {fileID: 21300000, guid: e5473f458eeb0e44ebc74fd401a8fb0f, type: 3}
+  - {fileID: 21300000, guid: 3425246d19809654e870ea8857daebbe, type: 3}
+  - {fileID: 21300000, guid: c73350d6e0bcdc44996971a6be2dc3f5, type: 3}
+  - {fileID: 21300000, guid: 2a1d886ad93c61d40abb1e577e3a6584, type: 3}
+  - {fileID: 21300000, guid: 088a2d79a4887fa47b4931d81d795ae2, type: 3}
+  - {fileID: 21300000, guid: e6ab62323d838a44f955299a2009bb5c, type: 3}
+  - {fileID: 21300000, guid: 3e7f5bc579242284687a7e6d6dc20783, type: 3}
+  - {fileID: 21300000, guid: c6b3ce3dd4330934f881bfb1b8030773, type: 3}
+  - {fileID: 21300000, guid: a858b0b3375d9a04492dce104ca2b62e, type: 3}
+  - {fileID: 21300000, guid: ec27ae62bf704e14da79698cd9418749, type: 3}
+  - {fileID: 21300000, guid: 9dc70fcb14d48314882f9b3af861b42b, type: 3}
+  - {fileID: 21300000, guid: def1025e354e0e54c8c76c05f1cec5d4, type: 3}
+  - {fileID: 21300000, guid: 34b24d1b04c2e4a4abd5a8c3288b73d8, type: 3}
+  - {fileID: 21300000, guid: d3a83cd914b5cc34a8c690642ae6fd83, type: 3}
+  defaultSprite: 0
+  defaultFaceLeft: 0
+  numInSet: 7
+  currentIndex: 0

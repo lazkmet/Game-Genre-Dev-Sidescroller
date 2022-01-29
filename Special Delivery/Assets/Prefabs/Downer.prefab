@@ -177,6 +177,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43c29e1ae78704c4c8b17f9aa0509790, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 21300000, guid: 1a1a36e335568d84b9fb31293a606d5e, type: 3}
+  - {fileID: 21300000, guid: 1f4ddf0c232515b4a8b5a8d3fa95857f, type: 3}
+  - {fileID: 21300000, guid: 2f24390138121b34e9a031bcfa72c901, type: 3}
+  - {fileID: 21300000, guid: e94384e81a319c04e87534d8f8fad4fb, type: 3}
+  defaultSprite: 0
+  defaultFaceLeft: 1
+  numInSet: 4
+  currentIndex: 0
 --- !u!114 &4292180789585158578
 MonoBehaviour:
   m_ObjectHideFlags: 0

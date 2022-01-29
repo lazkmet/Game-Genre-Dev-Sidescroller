@@ -78,7 +78,7 @@ public class EnemyBehavior : MonoBehaviour
         for (int i = 0; i < 10; i++) {
             yield return null;
         }
-        if (targetArea.IsTouching(player)) {
+        if (targetArea.IsTouching(player) && !stunned) {
             StartCoroutine("Jump");
         }
         else {
@@ -108,14 +108,13 @@ public class EnemyBehavior : MonoBehaviour
         StartCoroutine("CheckArea");
     }
     public void Stun(float stunDuration) {
-        print("stunned");
         if (!stunned) {
             movementEnabled = false;
-            stunned = true;
             StartCoroutine("StunForSeconds", stunDuration);
         }
     }
     public IEnumerator StunForSeconds( float stunTime) {
+        stunned = true;
         yield return new WaitForSeconds(stunTime);
         movementEnabled = true;
         stunned = false;
