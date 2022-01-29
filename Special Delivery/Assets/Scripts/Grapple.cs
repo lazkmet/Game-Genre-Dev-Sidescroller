@@ -59,12 +59,13 @@ public class Grapple : MonoBehaviour
             {
                 //automatically retracts rope if you are above connecting point, with speed multiplied by the sine of the rope angle (closer to perpendicular, faster retract)
                 //TWEAK THIS
-                Extend(-0.05f * (rope.attachedRigidbody.position.y - rope.connectedAnchor.y) / (rope.connectedAnchor - rope.attachedRigidbody.position).magnitude);
+                Extend(-player.extendAmount * 0.5f * (rope.attachedRigidbody.position.y - rope.connectedAnchor.y) / (rope.connectedAnchor - rope.attachedRigidbody.position).magnitude);
             }
         }
     }
 
    public void Extend(float extensionAmount) {
+        extensionAmount *= Time.deltaTime;
         float oldDistance = rope.distance;
         float minDistance = 1;
         float newDistance = rope.distance + extensionAmount;
@@ -96,7 +97,7 @@ public class Grapple : MonoBehaviour
                 targetPoint = hit.point;
             }
             ropeRenderer.enabled = true;
-            for (float time = 0; time < fireDuration; time += Time.fixedDeltaTime) {
+            for (float time = 0; time < fireDuration; time += Time.deltaTime) {
                 ropeRenderer.SetPosition(1, Vector2.Lerp(origin, targetPoint, time/fireDuration));
                 if (!Input.GetMouseButton(0)) {
                     StartCoroutine("CR_ReturnRope");
@@ -105,7 +106,7 @@ public class Grapple : MonoBehaviour
                 yield return null;
             }
             ropeRenderer.SetPosition(1, targetPoint);
-            if (hit.collider != null)
+            if (hit.collider != null && player.movementEnabled)
             {
                 rope.enabled = true;
                 rope.connectedAnchor = targetPoint;
@@ -127,9 +128,9 @@ public class Grapple : MonoBehaviour
             rope.enabled = false;
             Vector2 origin = ropeOrigin.position;
             Vector2 startPoint = ropeRenderer.GetPosition(ropeRenderer.positionCount-1);
-            for (float time = 0; time < fireDuration; time += Time.fixedDeltaTime)
+            for (float time = 0; time < fireDuration * 0.35f; time += Time.deltaTime)
             {
-                ropeRenderer.SetPosition(1, Vector2.Lerp(startPoint, ropeOrigin.position, time / fireDuration));
+                ropeRenderer.SetPosition(1, Vector2.Lerp(startPoint, ropeOrigin.position, time / (0.35f *fireDuration)));
                 yield return null;
             }
             ropeRenderer.enabled = false;

@@ -12,10 +12,7 @@ public class MenuManager : MonoBehaviour
     public bool isPaused { get; private set; }
     private void Awake()
     {
-        if (screens.Length > 0) {
-            SetActiveScreen(0);
-        }
-        isPaused = false;
+        Reset();
     }
     public void DeactivateAll() {
         for (int i = 0; i < screens.Length; i++)
@@ -54,5 +51,17 @@ public class MenuManager : MonoBehaviour
     public void Quit()
     {
         Application.Quit();
+    }
+    public void Reset()
+    {
+        if (screens.Length > 0)
+        {
+            SetActiveScreen(0);
+        }
+        isPaused = false;
+        Time.timeScale = 1;
+        if (pausable) { 
+            pauseScreen.gameObject.SetActive(false);
+        }
     }
 }

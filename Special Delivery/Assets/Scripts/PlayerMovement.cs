@@ -7,14 +7,22 @@ public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody2D body { get; private set; }
     public Grapple grapple { get; private set; }
+    public GameObject kickbox;
     public LayerMask terrainLayer;
+    public LayerMask enemyLayer;
     public float walkSpeed;
     public float airSpeed;
     public float swingForce;
     public float extendAmount;
+    public float kickCooldown;
+    public float kickDuration;
+    public float kickForce;
+    public float stunDuration;
     public GameObject package;
     public bool movementEnabled;
     public bool hasPackage;
+    public bool kicking;
+    [HideInInspector]
     public GameManager manager;
     private void Awake()
     {
@@ -42,12 +50,12 @@ public class PlayerMovement : MonoBehaviour
                 //REWORK PHYSICS IF TIME
                 else if (Input.GetKey(KeyCode.A))
                 {
-                    body.AddForce(Vector2.left * swingForce);
+                    body.AddForce(Vector2.left * swingForce * Time.deltaTime);
 
                 }
                 else if (Input.GetKey(KeyCode.D))
                 {
-                    body.AddForce(Vector2.right * swingForce);
+                    body.AddForce(Vector2.right * swingForce * Time.deltaTime);
                 }
             }
             else if (isGrounded())
@@ -71,12 +79,17 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (Input.GetKey(KeyCode.A))
                 {
-                    body.AddForce(Vector2.left * airSpeed);
+                    body.AddForce(Vector2.left * airSpeed * Time.deltaTime);
 
                 }
                 else if (Input.GetKey(KeyCode.D))
                 {
-                    body.AddForce(Vector2.right * airSpeed);
+                    body.AddForce(Vector2.right * airSpeed * Time.deltaTime);
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.Space) && !isGrounded()) {
+                if (!kicking) {
+                    Invoke("Kick", 0.2f);
                 }
             }
         }
@@ -89,7 +102,9 @@ public class PlayerMovement : MonoBehaviour
         gameObject.layer = 7;
         body.velocity = Vector2.zero;
         movementEnabled = true;
+        kickbox.SetActive(false);
         hasPackage = point.packageHad;
+        kicking = false;
     }
     public bool isGrounded() {
         Collider2D coll = body.gameObject.GetComponent<Collider2D>();
@@ -99,27 +114,32 @@ public class PlayerMovement : MonoBehaviour
         if (hit.collider != null) {
             if (grapple.attached == false) {
                 returnValue = true;
-                if (hasPackage && hit.collider.gameObject.tag != "safe")
+                if (hasPackage && hit.collider.gameObject.name == "Win Zone") {
+                    manager.Win();
+                }
+                else if (hasPackage && hit.collider.gameObject.tag != "safe")
                 {
                     manager.Loss();
                 }
                 else
                 {
                     body.velocity = body.velocity * 0.95f;
+                    if (body.velocity.magnitude < 0.01 && Mathf.Abs(body.rotation) > 1)
+                    {
+                        Vector3 currentPosition = body.transform.position;
+                        currentPosition.y = hit.point.y + (gameObject.transform.lossyScale.y / 2);
+                        body.transform.rotation = Quaternion.identity;
+                        body.transform.position = currentPosition;
+                    }
                 }
-                /*if (body.velocity.magnitude < 0.01 && Mathf.Abs(body.rotation) > 1) {
-                    print("reset rotation");
-                    Vector3 currentPosition = body.transform.position;
-                    currentPosition.y = hit.point.y + (gameObject.transform.lossyScale.y/2);
-                    body.transform.rotation = Quaternion.identity;
-                    body.transform.position = currentPosition;
-                }*/
+                
             }
         }
         return returnValue;
     }
     public void Reset()
     {
+        CancelInvoke();
         try
         {
             ResetToCheckpoint(manager.startPoint);
@@ -130,9 +150,55 @@ public class PlayerMovement : MonoBehaviour
         }
         hasPackage = false;
     }
+    private void Kick() {
+        kicking = true;
+        if (movementEnabled)
+        {
+            kickbox.SetActive(true);
+            StartCoroutine("DetectKick");
+        }
+        else {
+            StartCoroutine("Cooldown", 0);
+        }
+    }
+    public IEnumerator DetectKick() {
+        yield return new WaitForSeconds(0.2f);
+        float currentTime = 0;
+        Collider2D[] enemiesHit = new Collider2D[10];
+        ContactFilter2D castValues = new ContactFilter2D();
+        castValues.SetLayerMask(enemyLayer);
+        while (currentTime < kickDuration && !isGrounded()) {
+            kickbox.GetComponent<Collider2D>().OverlapCollider(castValues, enemiesHit);
+            for (int i = 0; i < enemiesHit.Length; i++) {
+                if (enemiesHit[i] != null) { 
+                    Rigidbody2D enemy = enemiesHit[i].attachedRigidbody;
+                    if (enemy.velocity.y > 0){
+                            Vector2 newVelocity = enemy.velocity;
+                            newVelocity.y = newVelocity.y * 0.25f;
+                            enemy.velocity = newVelocity;
+                    }
+                        Vector2 force = enemy.position - body.position;
+                        force = force.normalized * kickForce;
+                        enemy.gameObject.GetComponent<EnemyBehavior>().Stun(stunDuration);
+                        enemy.AddForce(force, ForceMode2D.Impulse);
+                }
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                currentTime += Time.deltaTime;
+                yield return null;
+            }
+        }
+        StartCoroutine("Cooldown", kickCooldown);
+    }
+    public IEnumerator Cooldown(float cooldownTime) {
+        kickbox.SetActive(false);
+        yield return new WaitForSeconds(cooldownTime);
+        kicking = false;
+    }
     public void Stun(float stunTime) {
         movementEnabled = false;
-        gameObject.layer = 10;
+        CancelInvoke();
         grapple.StartCoroutine("CR_ReturnRope");
         StartCoroutine("CR_WaitForStun", stunTime);
     }
@@ -141,6 +207,5 @@ public class PlayerMovement : MonoBehaviour
         if (!manager.gameOver) {
             movementEnabled = true;
         }
-        gameObject.layer = 7;
     }
 }

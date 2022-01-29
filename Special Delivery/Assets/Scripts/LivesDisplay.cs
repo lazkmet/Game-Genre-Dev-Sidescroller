@@ -7,15 +7,15 @@ public class LivesDisplay : MonoBehaviour
 {
     public Sprite brokenBox;
     public Sprite normalBox;
-    private int currentID = 0;
+    private int currentChildren = 0;
     private Image[] lifeImages;
 
     private void Start()
     {
-        currentID = this.gameObject.transform.childCount - 1;
-        lifeImages = new Image[currentID + 1];
+        currentChildren = this.gameObject.transform.childCount;
+        lifeImages = new Image[currentChildren];
         for (int i = 0; i < lifeImages.Length; i++) {
-            lifeImages[i] = transform.GetChild(currentID).gameObject.GetComponent<Image>();
+            lifeImages[i] = transform.GetChild(i).gameObject.GetComponent<Image>();
         }
     }
     public void UpdateLives(int currentLives = 0)

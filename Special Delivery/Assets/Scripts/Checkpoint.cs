@@ -32,7 +32,6 @@ public class Checkpoint : MonoBehaviour
     public void Activate(){
         try
         {
-            print("Checkpoint Activated");
             manager.activeCheckpoint = this;
             if (manager.player.hasPackage) {
                 packageHad = true;

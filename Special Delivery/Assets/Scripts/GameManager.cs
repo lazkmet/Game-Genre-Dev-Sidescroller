@@ -14,11 +14,13 @@ public class GameManager : MonoBehaviour
     public int maxLives = 1;
     private int currentLives;
     private bool midcrash;
+    private EnemyBehavior[] enemies;
     [HideInInspector]
     public bool gameOver;
     private void Awake()
     {
         menu = gameObject.GetComponent<MenuManager>();
+        enemies = FindObjectsOfType<EnemyBehavior>();
     }
     void Start()
     {
@@ -35,9 +37,12 @@ public class GameManager : MonoBehaviour
                 print(ex.Message);
             }
         }
+        if (Input.GetKeyDown(KeyCode.CapsLock) && !gameOver)
+        {
+            GameOver();
+        }
     }
     public void Loss() {
-        print("Crash");
         if (!midcrash) {
             midcrash = true;
             currentLives--;
@@ -58,26 +63,32 @@ public class GameManager : MonoBehaviour
             print(ex.Message);
         }
     }
-    private void ResetLevel() {
+    public void ResetLevel() {
         currentLives = maxLives;
-        menu.SetActiveScreen(0);
+        menu.Reset();
         activeCheckpoint = startPoint;
         UpdateLives();
         midcrash = false;
         gameOver = false;
+        player.Reset();
+        for (int i = 0; i < enemies.Length; i++) {
+            enemies[i].Reset();
+        }
     }
     private IEnumerator DelayedGameOver() {
-        print("Current Speed: " + player.body.velocity.magnitude);
         while (player.body.velocity.magnitude > 0.001f) {
             player.body.velocity = player.body.velocity * 0.9975f;
             yield return null;
         }
-        print("0 velocity");
         yield return new WaitForSecondsRealtime(0.5f);
         if (currentLives > 0)
         {
             player.ResetToCheckpoint(activeCheckpoint);
             package.Reset();
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                enemies[i].Reset();
+            }
         }
         else
         {
@@ -88,8 +99,19 @@ public class GameManager : MonoBehaviour
     private void UpdateLives() {
         try
         {
-            menu.screens[0].GetComponent<LivesDisplay>().UpdateLives(currentLives);
+            menu.screens[0].GetComponentInChildren<LivesDisplay>().UpdateLives(currentLives);
             activeCheckpoint = startPoint;
+        }
+        catch (System.Exception ex)
+        {
+            print(ex.Message);
+        }
+    }
+    public void Win() {
+        Time.timeScale = 0;
+        try
+        {
+            menu.SetActiveScreen(2);
         }
         catch (System.Exception ex)
         {
